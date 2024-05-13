@@ -66,6 +66,7 @@ llm = Replicate(
 conversation_buf = ConversationChain(
     llm=llm,
     memory=ConversationBufferMemory(),
+    return_only_outputs=True
 )
 
 # The UI Part
