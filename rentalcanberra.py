@@ -3,8 +3,6 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
-from openai import OpenAI
 import chromadb
 from chromadb.utils import embedding_functions
 import speech_recognition as sr
@@ -37,7 +35,7 @@ collection = client.get_or_create_collection(
 # if st.sidebar.button("Load OFSC Facsheets into Vector DB if loading the page for the first time.", type="primary"):
 @st.cache_resource
 def create_vector():
-      with open("ofsc2.txt") as f:
+      with open("Renting-Book-October-2023-Update.txt") as f:
           hansard = f.read()
           text_splitter = RecursiveCharacterTextSplitter(
               chunk_size=500,
@@ -58,29 +56,28 @@ def create_vector():
 create_vector()
 
 # The UI Part
-st.title("👨‍💻 Wazzup!!!! What do you want to know about the OFSC?")
-# apikey = st.sidebar.text_area("Please enter enter your API Key.")
-prompt = st.text_area("Please enter what you want to know about the OFSC Accreditation process.")
+st.title("👨‍💻 Wazzup!!!! What do you want to know about Renting in Canberra?")
+prompt = st.text_area("Please enter what you want to know about renting in Canberra.")
 
 # Load VectorDB
-if st.sidebar.button("Load OFSC Facsheets into Vector DB if loading the page for the first time.", type="primary"):
-      with open("ofsc2.txt") as f:
-          hansard = f.read()
-          text_splitter = RecursiveCharacterTextSplitter(
-              chunk_size=500,
-              chunk_overlap=20,
-              length_function=len,
-              is_separator_regex=False,
-          )
+# if st.sidebar.button("Load OFSC Facsheets into Vector DB if loading the page for the first time.", type="primary"):
+      # with open("ofsc2.txt") as f:
+          # hansard = f.read()
+          # text_splitter = RecursiveCharacterTextSplitter(
+              # chunk_size=500,
+              # chunk_overlap=20,
+              # length_function=len,
+              # is_separator_regex=False,
+          # )
            
-      texts = text_splitter.create_documents([hansard])
-      documents = text_splitter.split_text(hansard)[:len(texts)]
+      # texts = text_splitter.create_documents([hansard])
+      # documents = text_splitter.split_text(hansard)[:len(texts)]
      
-      collection.add(
-           documents=documents,
-           ids=[f"id{i}" for i in range(len(documents))],
-      )
-      f.close()
+      # collection.add(
+           # documents=documents,
+           # ids=[f"id{i}" for i in range(len(documents))],
+      # )
+      # f.close()
      
       # number of rows
       # st.write(len(collection.get()['documents']))
@@ -96,7 +93,6 @@ if st.button("Submit to AI", type="primary"):
      augment_query = str(query_results["documents"])
 
      result_ai = ""
-     # The meta/llama-2-7b-chat model can stream output as it's running.
      # The meta/meta-llama-3-70b-instruct model can stream output as it's running.
      for event in replicate.stream(
          "meta/meta-llama-3-70b-instruct",
