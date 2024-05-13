@@ -1,5 +1,6 @@
 streamlit
 langchain
+langchain-core
 pysqlite3-binary
 sentence_transformers
 chromadb
