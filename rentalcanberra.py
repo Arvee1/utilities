@@ -10,6 +10,7 @@ import replicate
 import pyaudio
 import wave
 from audiorecorder import audiorecorder
+from langchain.memory import ConversationBufferMemory
 
 # initialize
 r = sr.Recognizer()
@@ -55,33 +56,19 @@ def create_vector():
 
 create_vector()
 
+llm = Replicate(
+    model="meta/meta-llama-3-8b-instruct",
+    model_kwargs={"temperature": 0.75, "max_length": 500, "top_p": 1},
+)
+
+conversation_buf = ConversationChain(
+    llm=llm,
+    memory=ConversationBufferMemory(),
+)
+
 # The UI Part
 st.title("👨‍💻 Wazzup!!!! What do you want to know about Renting in Canberra?")
 prompt = st.text_area("Please enter what you want to know about renting in Canberra.")
-
-# Load VectorDB
-# if st.sidebar.button("Load OFSC Facsheets into Vector DB if loading the page for the first time.", type="primary"):
-      # with open("ofsc2.txt") as f:
-          # hansard = f.read()
-          # text_splitter = RecursiveCharacterTextSplitter(
-              # chunk_size=500,
-              # chunk_overlap=20,
-              # length_function=len,
-              # is_separator_regex=False,
-          # )
-           
-      # texts = text_splitter.create_documents([hansard])
-      # documents = text_splitter.split_text(hansard)[:len(texts)]
-     
-      # collection.add(
-           # documents=documents,
-           # ids=[f"id{i}" for i in range(len(documents))],
-      # )
-      # f.close()
-     
-      # number of rows
-      # st.write(len(collection.get()['documents']))
-      # st.sidebar.write("OFSC Vector DB created. With " + len(collection.get()['documents']) + " rows." )
 
 if st.button("Submit to AI", type="primary"):
      query_results = collection.query(
@@ -91,25 +78,28 @@ if st.button("Submit to AI", type="primary"):
           n_results=20,
      )
      augment_query = str(query_results["documents"])
+     augment_input = "Prompt: " + prompt + " " + augment_query
+     conversation_buf(augment_input)
+     st.write(conversation_buf.memory.buffer)
 
-     result_ai = ""
+     # result_ai = ""
      # The meta/meta-llama-3-70b-instruct model can stream output as it's running.
-     for event in replicate.stream(
-         "meta/meta-llama-3-70b-instruct",
-         input={
-             "top_k": 50,
-             "top_p": 0.9,
-             "prompt": "Prompt: " + prompt + " " + augment_query,
-             "max_tokens": 512,
-             "min_tokens": 0,
-             "temperature": 0.6,
-             "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
-             "presence_penalty": 1.15,
-             "frequency_penalty": 0.2
-         },
-     ):
-         result_ai = result_ai + (str(event))
-     st.write(result_ai)
+     # for event in replicate.stream(
+         # "meta/meta-llama-3-70b-instruct",
+         # input={
+             # "top_k": 50,
+             # "top_p": 0.9,
+             # "prompt": "Prompt: " + prompt + " " + augment_query,
+             # "max_tokens": 512,
+             # "min_tokens": 0,
+             # "temperature": 0.6,
+             # "prompt_template": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are a helpful assistant<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+             # "presence_penalty": 1.15,
+             # "frequency_penalty": 0.2
+         # },
+     # ):
+         # result_ai = result_ai + (str(event))
+     # st.write(result_ai)
      
 
 # This is the part where you can verbally ask about stuff
