@@ -76,7 +76,7 @@ if st.button("Submit to AI", type="primary"):
      query_results = collection.query(
           query_texts=[prompt],
           # include=["documents", "embeddings"],
-          where_document={"$contains":prompt},
+          # where_document={"$contains":prompt},
           include=["documents"],
           n_results=20,
      )
