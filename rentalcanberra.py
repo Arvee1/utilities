@@ -81,8 +81,9 @@ if st.button("Submit to AI", type="primary"):
      )
      augment_query = str(query_results["documents"])
      augment_input = "Prompt: " + prompt + " " + augment_query
-     conversation_buf(augment_input)
-     st.write(conversation_buf.memory.buffer)
+     ai_response = conversation_buf(augment_input)
+     st.write(ai_response)
+     # st.write(conversation_buf.memory.buffer)
 
      # result_ai = ""
      # The meta/meta-llama-3-70b-instruct model can stream output as it's running.
