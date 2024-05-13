@@ -82,9 +82,9 @@ if st.button("Submit to AI", type="primary"):
      )
      augment_query = str(query_results["documents"])
      augment_input = "Prompt: " + prompt + " " + augment_query
-     st.write(augment_input)
-     # ai_response = conversation_buf.run(augment_input)
-     # st.write(ai_response)
+     # st.write(augment_input)
+     ai_response = conversation_buf.run(augment_input)
+     st.write(ai_response)
      # st.write(conversation_buf.memory.buffer)
 
      # result_ai = ""
