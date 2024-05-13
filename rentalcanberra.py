@@ -84,19 +84,19 @@ st.title("👨‍💻 Wazzup!!!! What do you want to know about Renting in Canbe
 prompt = st.text_area("Please enter what you want to know about renting in Canberra.")
 
 if st.button("Submit to AI", type="primary"):
-     query_results = collection.query(
-          query_texts=[prompt],
+     # query_results = collection.query(
+          # query_texts=[prompt],
           # include=["documents", "embeddings"],
           # where_document={"$contains":prompt},
-          include=["documents"],
-          n_results=20,
-     )
-     augment_query = str(query_results["documents"])
-     augment_input = "Prompt: " + prompt + " " + augment_query
+          # include=["documents"],
+          # n_results=20,
+     # )
+     # augment_query = str(query_results["documents"])
+     # augment_input = "Prompt: " + prompt + " " + augment_query
      # st.write(augment_input)
      ai_response = conversation_buf.run(augment_input)
-     # st.write(ai_response)
-     st.write(conversation_buf.memory.buffer)
+     st.write(ai_response)
+     # st.write(conversation_buf.memory.buffer)
 
      # result_ai = ""
      # The meta/meta-llama-3-70b-instruct model can stream output as it's running.
