@@ -12,6 +12,7 @@ import wave
 from audiorecorder import audiorecorder
 from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import Replicate
+from langchain.chains import ConversationChain
 
 # initialize
 r = sr.Recognizer()
